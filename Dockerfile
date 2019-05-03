@@ -8,4 +8,6 @@ LABEL "com.github.actions.color"="orange"
 ADD bin /bin
 ADD lib /lib
 
+RUN gem install octokit
+
 ENTRYPOINT ["entrypoint"]

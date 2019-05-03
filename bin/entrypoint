@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative "../lib/push_event"
+require "octokit"
 
 file_path = ARGV.first
 
@@ -11,6 +12,8 @@ end
 
 push_event = PushEvent.new(File.read(ENV.fetch("GITHUB_EVENT_PATH")))
 
+puts push_event.data.inspect
+
 unless push_event.valid?
   puts "ERROR: This Action can only be run as part of a workflow triggered by a push event."
   exit(1)
@@ -20,8 +23,11 @@ puts "Checking if #{file_path} was modified in this push..."
 
 if push_event.modified?(file_path)
   puts "#{file_path} was modified"
-  exit(0)
+
+  github = Octokit::Client.new(access_token: ENV["GITHUB_TOKEN"])
+
+  # github.add_comment("unsplash/action-playground", 2, "@aaronklaassen is super handsome, btw")
+
 else
   puts "#{file_path} was not modified"
-  exit(1)
 end
