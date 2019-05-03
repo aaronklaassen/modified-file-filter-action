@@ -26,6 +26,11 @@ if push_event.modified?(file_path)
 
   github = Octokit::Client.new(access_token: ENV["GITHUB_TOKEN"])
 
+  if !ENV["GITHUB_TOKEN"]
+    puts "missing GITHUB_TOKEN"
+    exit(1)
+  end
+
   repo = push_event.data["repository"]["full_name"]
   pulls = github.pull_requests(repo, state: "open")
 
