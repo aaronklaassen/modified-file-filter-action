@@ -26,8 +26,13 @@ if push_event.modified?(file_path)
 
   github = Octokit::Client.new(access_token: ENV["GITHUB_TOKEN"])
 
-  # github.add_comment("unsplash/action-playground", 2, "@aaronklaassen is super handsome, btw")
+  repo = push_event.data["repository"]["full_name"]
+  pulls = github.pull_requests(repo, state: "open")
 
+  branch_name = push_event.data["ref"].split("/").last
+  pr = pulls.find { |pr| pr["head"]["ref"] == branch_name }
+
+  github.add_comment(repo, pr["number"], "#{file_path} changed!")
 else
   puts "#{file_path} was not modified"
 end
